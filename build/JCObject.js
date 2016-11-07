@@ -105,7 +105,7 @@ var JCObject = function () {
                 data = this._convertProp(data);
                 //if this property doesn't exist, don't create it
                 if (typeof this[data] == "undefined") {
-                    return this.getData();
+                    return this;
                 }
                 //update the single prop
                 this[data] = val;
