@@ -9,7 +9,24 @@
 import extend from 'extend';
 //create class to represent a basic object
 var JCObject = class {
-        constructor (data) {
+        // - model (obj) An object of property names and default values 
+        //               to use to create the object
+        constructor (model) {
+            var val;
+            //default value for id
+            this._id = 0;
+            //create additional props 
+            //(given default id will overwrite above default)
+            for (let prop in model) {
+                val = model[prop];
+                //if this prop doesn't have a private name
+                if (prop.indexOf("_") != 0) {
+                    //make it so
+                    prop = "_" + prop;
+                }
+                //init property
+                this[prop] = val;
+            }
             //internal id of the email
             this._id = Math.floor(Math.random() * 1000000);
         }

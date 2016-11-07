@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.JCObject = undefined;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -26,9 +26,26 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 //create class to represent a basic object
 var JCObject = function () {
-    function JCObject(data) {
+    // - model (obj) An object of property names and default values 
+    //               to use to create the object
+    function JCObject(model) {
         _classCallCheck(this, JCObject);
 
+        var val;
+        //default value for id
+        this._id = 0;
+        //create additional props 
+        //(given default id will overwrite above default)
+        for (var prop in model) {
+            val = model[prop];
+            //if this prop doesn't have a private name
+            if (prop.indexOf("_") != 0) {
+                //make it so
+                prop = "_" + prop;
+            }
+            //init property
+            this[prop] = val;
+        }
         //internal id of the email
         this._id = Math.floor(Math.random() * 1000000);
     }
@@ -66,15 +83,15 @@ var JCObject = function () {
                 //add prop to collection
                 collection[prop[i]] = this[this._convertProp(prop[i])];
             }
-            //return collection    
+            //return collection     
             return collection;
         }
 
         //SETTERS
         // updates with new data
-        // - data (obj, string) A collection of properties and new values to
-        //                      update OR the name of a single property to update 
-        // - val (string -- optional) If data is string (single prop), the
+        // - data (obj, string) A collection of properties and new values to 
+        //                      update OR the name of a single property to update  
+        // - val (string -- optional) If data is string (single prop), the 
         //                            value to update it to
         // returns (obj) This
 
