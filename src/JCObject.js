@@ -93,7 +93,7 @@ var JCObject = class {
                     }
                 }
                 //extend default props with new data
-                extend(true, this, newData);
+                extend(this, newData);
             }
             return this;
         }

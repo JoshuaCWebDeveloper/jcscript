@@ -122,7 +122,7 @@ var JCObject = function () {
                         }
                     }
                     //extend default props with new data
-                    (0, _extend2.default)(true, this, newData);
+                    (0, _extend2.default)(this, newData);
                 }
             return this;
         }
