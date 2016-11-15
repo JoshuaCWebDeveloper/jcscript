@@ -115,8 +115,8 @@ var JCFluxStore = function (_JCObject) {
 
 
     _createClass(JCFluxStore, [{
-        key: 'actions',
-        value: function actions() {
+        key: 'Actions',
+        value: function Actions() {
             return this._Actions;
         }
 

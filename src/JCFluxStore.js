@@ -68,7 +68,7 @@ class JCFluxStore extends JCObject {
     
     //GETTERS
     //gets actions service
-    actions () {
+    Actions () {
         return this._Actions;
     }
     

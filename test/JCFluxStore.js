@@ -33,7 +33,7 @@ describe('JCFluxStore', function () {
             assert.strictEqual(testObj.get(defaultProp), defaults.lastName);
         });
         it ('Should instantiate with default flux actions', function () {
-            assert(testObj.actions() && testObj.actions().update);
+            assert(testObj.Actions() && testObj.Actions().update);
         });
     });
     
