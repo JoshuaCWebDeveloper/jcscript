@@ -51,7 +51,7 @@ describe('JCFluxStore', function () {
             assert.equal(testObj.get(newProp), newValue);
         });
         it ('Should call change handler on update', function () {
-            testObj.update(newProp, newValue);
+            testObj.Actions().update(newProp, newValue);
         });
     });
     
@@ -66,7 +66,7 @@ describe('JCFluxStore', function () {
             //remove listener
             testObj.removeChangeListener(listener);
             //update with data
-            testObj.update({});
+            testObj.Actions().update({});
             assert(notChanged);
         });
     });
