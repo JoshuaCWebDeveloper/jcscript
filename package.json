@@ -22,7 +22,8 @@
   "main": "build/index.js",
   "scripts": {
     "build": "babel src/ --out-dir build/",
-    "test": "mocha"
+    "test": "mocha",
+    "test-inspect": "mocha --inspect --debug-brk"
   },
   "babel": {
     "presets": [
