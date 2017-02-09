@@ -46,7 +46,7 @@ var JCObject = function () {
             //init property
             this[prop] = val;
         }
-        //internal id of the email
+        //internal id of the object
         this._id = Math.floor(Math.random() * 1000000);
     }
 
