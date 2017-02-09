@@ -10,12 +10,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.JCFluxStore = exports.JCObject = undefined;
+exports.ClientService = exports.JCFluxStore = exports.JCObject = undefined;
 
 var _JCObject = require('./JCObject.js');
 
 var _JCFluxStore = require('./JCFluxStore.js');
 
+var _ClientService = require('./ClientService.js');
+
 //export modules
 exports.JCObject = _JCObject.JCObject;
 exports.JCFluxStore = _JCFluxStore.JCFluxStore;
+exports.ClientService = _ClientService.ClientService;

@@ -8,5 +8,6 @@
 //include modules
 import { JCObject } from './JCObject.js';
 import { JCFluxStore } from './JCFluxStore.js';
+import { ClientService } from './ClientService.js';
 //export modules
-export { JCObject, JCFluxStore };
+export { JCObject, JCFluxStore, ClientService };
