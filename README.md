@@ -96,6 +96,20 @@ $("#promote").on('click', function (e) {
 });
 ```
 
+Use `ClientService` to easily manage network requests
+
+```
+var Service = new ClientService ();
+Service.get("http://www.example.com/api/employee/1").then(data => {
+    Employee.update(data);
+});
+Service.ajax(
+    "PUT",
+    "http://www.example.com/api/employee/1",
+    Employee.get(['firstName', 'lastName', 'title', 'projects'])
+);
+```
+
 ##API
 
 ###JCObject
