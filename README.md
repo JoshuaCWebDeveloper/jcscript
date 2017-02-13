@@ -107,12 +107,12 @@ A basic object class with getter and setter methods that can be inherited from w
               to use to create the object
         
 #####<a name="jcobject-get"></a>get (prop)
-gets a property value
+Gets a property value.
 - prop (string, array) The name(s) of the property(ies) to get
 - returns (all) The property value, or an object of all properties requested
 
 #####<a name="jcobject-update"></a>update (data[, val])
-updates with new data
+Updates with new data.
 - data (obj, string) A collection of properties and new values to 
                      update OR the name of a single property to update  
 - val (string) If data is string (single prop), the 
@@ -121,7 +121,7 @@ updates with new data
 
 ###JCFluxStore
 
-Aa basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject with built-in actions and dispatcher.
+A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject with built-in actions and dispatcher.
 
 #####constructor ([data, defaults, Dispatch, Actions, AC])
 - data (obj) A collection of properties and values to populate the store with
