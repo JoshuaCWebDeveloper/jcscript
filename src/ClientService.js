@@ -311,8 +311,11 @@ Received: ${method}, ${url}`);
         // send GET request to url 
         // - url (string)  The url to send the request to.
         // - params (obj) A JavaScript object to be sent to the API as urlencoded string
-        // - reject (string, int, array) The reject value to set
-        // - returns (jqXHR, $.Deferred) A jQuery promise    
+        // - serviceOptions (obj -- optional) Service property values to use for just this request 
+        //                                    ({auth, reject}, see doc for constructor()) 
+        // - ajaxOptions (obj -- optional) Options to pass to jQuery.ajax() for this request
+        //                                 (see doc for jQuery.ajax())
+        // - returns (Q) A Q Promise
         get (url, params, serviceOptions, ajaxOptions) {
             //create ajaxOptions
             var ajaxProps = extend({
