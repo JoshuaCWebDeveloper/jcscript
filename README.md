@@ -136,6 +136,11 @@ A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject wit
 #####<a name="jcflux-update"></a>update (data[, val]) -- *Triggers Change Event*
 [JCObject.update()](#jcobject-update)
 
+#####addChangeListener (callback)
+#####removeChangeListener (callback)
+Add/remove a change listener that gets called when change events are triggered in the store.
+- callback (func) The listener to register
+
 ####Built-In Actions
 
 #####update (id, data[, val]) -> [JCFluxStore.update()](#jcflux-update)
