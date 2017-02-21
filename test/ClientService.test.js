@@ -293,6 +293,19 @@ describe('ClientService', function () {
             });
             return Service.get(uri);
         });
+        
+        it ('Can be cancelled', function () {
+            //create service
+            var Service = new ClientService(),
+                promise;
+            //make request
+            promise = Service.get(uri).catch(function (args) {
+                assert(args == "CANCELLED");
+            });
+            //cancel request
+            Service.cancel(Service.getLastCallId());
+            return promise;
+        });
     });
     
     describe('#Error Statuses', function () {
