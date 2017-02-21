@@ -1,6 +1,6 @@
 {
   "name": "jcscript",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "JCScript",
   "dependencies": {
     "events": "^1.1.1",
