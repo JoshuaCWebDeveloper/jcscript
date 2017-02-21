@@ -172,7 +172,7 @@ A service class for sending and handling network requests from clients with defa
   + If a 4** or 5** code is received, the default behavior is to resend the request (waiting one second longer before each resend)
   + Any HTTP status codes passed will instead result in a rejection of the promise
 - reject (array[int]) An array of integer HTTP status codes   
-- reject (string) The string 'any' will reject the promise for all failed requests
+- reject (string) The string 'all' will reject the promise for all failed requests
 
 #####setAuth (auth)
 Sets the auth value for the service (see [ClientService.constructor()](#clientservice-constructor)).
