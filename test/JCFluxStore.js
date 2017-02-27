@@ -1,6 +1,6 @@
 /* JCFluxStore.js
  * Tests JCFluxStore
- * Dependencies: assert, Q modules, mocha context
+ * Dependencies: assert modules, JCFluxStore, FluxStore classes, mocha context
  * Author: Joshua Carter
  * Created: November 6, 2016
  */
@@ -8,7 +8,7 @@
 //include dependencies
 var assert = require('assert'),
     JCFluxStore = require('../build/index').JCFluxStore,
-    Q = require('q');
+    FluxStore = require('../build/index').JCFlux.FluxStore;
 
 //begin mocha tests
 describe('JCFluxStore', function () {
@@ -69,5 +69,12 @@ describe('JCFluxStore', function () {
             testObj.Actions().update({});
             assert(notChanged);
         });
+    });
+});
+
+describe('FluxStore', function () {
+    it ('Can be included', function () {
+        var newStore = new FluxStore();
+        assert(newStore && typeof newStore.emitChange == "function");
     });
 });
