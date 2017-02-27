@@ -3,7 +3,16 @@ JCScript
 
 This is a collection of JavaScripts to aid in the development of JS projects
 
-##Installation/Setup
+- [Installation/Setup](#installation)
+- [Examples](#examples)
+- [API](#api)
+  + [JCObject](#jcobject)
+  + [JCFluxStore](#jcfluxstore)
+  + [JCFlux](#jcflux)
+    * [FluxStore](#fluxstore)
+  + [ClientService](#clientservice)
+
+##<a name="installation"></a>Installation/Setup
 Run:
 
 `npm install jcscript`
@@ -18,7 +27,7 @@ var JCObject = JCScript.JCObject;
 
 `import { JCObject } from 'jcscript'`
 
-## Examples
+##<a name="examples"></a>Examples
 
 Use `JCObject` to create and access a simple object
 
@@ -110,9 +119,9 @@ Service.ajax(
 );
 ```
 
-##API
+##<a name="api"></a>API
 
-###JCObject
+###<a name="jcobject"></a>JCObject
 
 A basic object class with getter and setter methods that can be inherited from when creating simple data stores.
 
@@ -133,7 +142,7 @@ Updates with new data.
                value to update it to
 - returns (obj) This
 
-###JCFluxStore
+###<a name="jcfluxstore"></a>JCFluxStore
 
 A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject with built-in actions and dispatcher.
 
@@ -162,7 +171,7 @@ Add/remove a change listener that gets called when change events are triggered i
 - Action parameters: data, val
 - Action name: **UPDATE**
 
-###ClientService
+###<a name="clientservice"></a>ClientService
 
 A service class for sending and handling network requests from clients with default functionality to automatically resend failed requests. This means that the service will wait for a successful HTTP status before resolving the returned promise while progressively waiting one second longer before each resend. The service can be configured to reject the returned promise instead of resending the request for specific HTTP statuses or all statuses. This configuration can be done globally or on a per request level. Authorization can also be handled by providing a value for the `Authorization` header and listening for invalid auth events. Requests are sent using [jQuery.ajax()](http://api.jquery.com/jquery.ajax/); settings properties to override those provided to jQuery.ajax() by default can be passed on a per request basis. Returned promises are from the [Q](https://github.com/kriskowal/q/wiki/API-Reference) library.
 
