@@ -9,5 +9,9 @@
 import { JCObject } from './JCObject.js';
 import { JCFluxStore } from './JCFluxStore.js';
 import { ClientService } from './ClientService.js';
+import { FluxStore } from './FluxStore.js';
+var JCFlux = {
+    FluxStore: FluxStore
+};
 //export modules
-export { JCObject, JCFluxStore, ClientService };
+export { JCObject, JCFluxStore, ClientService, JCFlux };
