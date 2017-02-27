@@ -1,11 +1,11 @@
 /* JCFluxStore.js
  * Represents a basic flux store modeled by a JCObject
- * Dependencies: jcscript, events, extend, flux modules
+ * Dependencies: extend, flux, es6-mixin modules, JCObject, FluxStore classes
  * Author: Joshua Carter
  * Created: November 6, 2016
  */
 "use strict";
-//include dependencies
+//include modules
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -13,12 +13,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.JCFluxStore = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+//include classes
 
-var _JCObject2 = require('./JCObject.js');
-
-var _events = require('events');
-
-var _events2 = _interopRequireDefault(_events);
 
 var _extend = require('extend');
 
@@ -28,9 +24,15 @@ var _flux = require('flux');
 
 var _flux2 = _interopRequireDefault(_flux);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _es6Mixins = require('es6-mixins');
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+var _es6Mixins2 = _interopRequireDefault(_es6Mixins);
+
+var _JCObject2 = require('./JCObject.js');
+
+var _FluxStore = require('./FluxStore.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -78,11 +80,11 @@ JCDispatch = new _flux2.default.Dispatcher(),
 
 //create new actions service
 JCActions = new JCActionsService(JCDispatch, ACTIONS);
-//inherit from both JCObject and Events
-(0, _extend2.default)(true, _JCObject2.JCObject.prototype, _events2.default.EventEmitter.prototype);
+//inherit from both JCObject and FluxStore
+(0, _es6Mixins2.default)(_FluxStore.FluxStore, _JCObject2.JCObject.prototype);
 //child will have method the same name as the parent
 _JCObject2.JCObject.prototype._updateData = _JCObject2.JCObject.prototype.update;
-//create PlayStore class from JCObject
+//create JCFluxStore class from JCObject
 
 var JCFluxStore = function (_JCObject) {
     _inherits(JCFluxStore, _JCObject);
@@ -92,19 +94,20 @@ var JCFluxStore = function (_JCObject) {
 
         //if we weren't given defaults, use data
         var defaults = defaults || data;
-        //pass data to parent
+        //pass data to JCObject
 
-        //store services
+        //call FluxStore constructor
         var _this = _possibleConstructorReturn(this, (JCFluxStore.__proto__ || Object.getPrototypeOf(JCFluxStore)).call(this, defaults));
 
-        _this._Dispatch = Dispatch || JCDispatch;
+        (0, _extend2.default)(_this, new _FluxStore.FluxStore(Dispatch), _this);
+
+        //store services
         _this._Actions = Actions || JCActions;
         //store contants
         _this._AC = AC || ACTIONS;
-        //register dispath
-        _this._RegisterDispatch();
-        //save event to server as our change event
-        _this._CHANGE_EVENT = 'change';
+        //create flux actions
+        _this.fluxActions[_this._AC.UPDATE] = "update";
+
         //update our store with the given data
         _this._updateData(data);
         return _this;
@@ -130,47 +133,6 @@ var JCFluxStore = function (_JCObject) {
             this._updateData(data, val);
             //our store has likely changed
             this.emitChange();
-        }
-    }, {
-        key: '_RegisterDispatch',
-        value: function _RegisterDispatch() {
-            var _this2 = this;
-
-            //map action types to store methods
-            var actions = {};
-            actions[this._AC.UPDATE] = "update";
-            //register our callback
-            this._Dispatch.register(function (action) {
-                //if we can handle this type of action, and it is for this play
-                if (action.params && action.type in actions && action.id == _this2._id) {
-                    //call the handler for this action
-                    _this2[actions[action.type]].apply(_this2, _toConsumableArray(action.params));
-                }
-            });
-        }
-
-        //triggers change event on our app
-
-    }, {
-        key: 'emitChange',
-        value: function emitChange() {
-            this.emit(this._CHANGE_EVENT);
-        }
-
-        //used to add listeners for our change event
-
-    }, {
-        key: 'addChangeListener',
-        value: function addChangeListener(callback) {
-            this.on(this._CHANGE_EVENT, callback);
-        }
-
-        //used to cleanup listeners on our change event
-
-    }, {
-        key: 'removeChangeListener',
-        value: function removeChangeListener(callback) {
-            this.removeListener(this._CHANGE_EVENT, callback);
         }
     }]);
 
