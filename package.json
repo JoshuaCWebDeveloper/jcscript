@@ -1,6 +1,6 @@
 {
   "name": "jcscript",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "JCScript",
   "dependencies": {
     "es6-mixins": "^1.0.2",
