@@ -28,9 +28,9 @@ var _es6Mixins = require('es6-mixins');
 
 var _es6Mixins2 = _interopRequireDefault(_es6Mixins);
 
-var _JCObject2 = require('./JCObject.js');
+var _JCObject = require('./JCObject.js');
 
-var _FluxStore = require('./FluxStore.js');
+var _FluxStore2 = require('./FluxStore.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -81,25 +81,26 @@ JCDispatch = new _flux2.default.Dispatcher(),
 //create new actions service
 JCActions = new JCActionsService(JCDispatch, ACTIONS);
 //inherit from both JCObject and FluxStore
-(0, _es6Mixins2.default)(_FluxStore.FluxStore, _JCObject2.JCObject.prototype);
-//child will have method the same name as the parent
-_JCObject2.JCObject.prototype._updateData = _JCObject2.JCObject.prototype.update;
-//create JCFluxStore class from JCObject
+(0, _es6Mixins2.default)(_JCObject.JCObject, _FluxStore2.FluxStore.prototype, { warn: false, mergeDuplicates: false });
+//create JCFluxStore class from FluxStore
 
-var JCFluxStore = function (_JCObject) {
-    _inherits(JCFluxStore, _JCObject);
+var JCFluxStore = function (_FluxStore) {
+    _inherits(JCFluxStore, _FluxStore);
 
     function JCFluxStore(data, defaults, Dispatch, Actions, AC) {
         _classCallCheck(this, JCFluxStore);
 
         //if we weren't given defaults, use data
-        var defaults = defaults || data;
-        //pass data to JCObject
+        var defaults = defaults || data,
 
-        //call FluxStore constructor
-        var _this = _possibleConstructorReturn(this, (JCFluxStore.__proto__ || Object.getPrototypeOf(JCFluxStore)).call(this, defaults));
+        //if we weren't given a Dipsatch, use JCDispatch
+        Dispatcher = Dispatch || JCDispatch;
+        //pass data to FluxStore
 
-        (0, _extend2.default)(_this, new _FluxStore.FluxStore(Dispatch), _this);
+        //call JCObject constructor
+        var _this = _possibleConstructorReturn(this, (JCFluxStore.__proto__ || Object.getPrototypeOf(JCFluxStore)).call(this, Dispatcher));
+
+        (0, _extend2.default)(_this, new _JCObject.JCObject(defaults), _this);
 
         //store services
         _this._Actions = Actions || JCActions;
@@ -137,8 +138,10 @@ var JCFluxStore = function (_JCObject) {
     }]);
 
     return JCFluxStore;
-}(_JCObject2.JCObject);
+}(_FluxStore2.FluxStore);
+//child will have method the same name as the parent
+
+
+JCFluxStore.prototype._updateData = _JCObject.JCObject.prototype.update;
 //export
-
-
 exports.JCFluxStore = JCFluxStore;

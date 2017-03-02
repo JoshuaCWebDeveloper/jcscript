@@ -42,19 +42,19 @@ var JCActionsService = class {
     //create new actions service
     JCActions = new JCActionsService(JCDispatch, ACTIONS);
 //inherit from both JCObject and FluxStore
-mixin(FluxStore, JCObject.prototype);       
-//child will have method the same name as the parent
-JCObject.prototype._updateData = JCObject.prototype.update;
-//create JCFluxStore class from JCObject
-class JCFluxStore extends JCObject {
+mixin(JCObject, FluxStore.prototype, {warn: false, mergeDuplicates: false});       
+//create JCFluxStore class from FluxStore
+class JCFluxStore extends FluxStore {
     
     constructor (data, defaults, Dispatch, Actions, AC) {
         //if we weren't given defaults, use data
-        var defaults = defaults || data;
-        //pass data to JCObject
-        super(defaults);
-        //call FluxStore constructor
-        extend(this, new FluxStore(Dispatch), this);
+        var defaults = defaults || data,
+            //if we weren't given a Dipsatch, use JCDispatch
+            Dispatcher = Dispatch || JCDispatch;
+        //pass data to FluxStore
+        super(Dispatcher);
+        //call JCObject constructor
+        extend(this, new JCObject(defaults), this);
         
         //store services
         this._Actions = Actions || JCActions;
@@ -84,5 +84,7 @@ class JCFluxStore extends JCObject {
     }
     
 }
+//child will have method the same name as the parent
+JCFluxStore.prototype._updateData = JCObject.prototype.update;
 //export
 export { JCFluxStore };
