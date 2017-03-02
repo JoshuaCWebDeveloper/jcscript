@@ -45,13 +45,16 @@ describe('JCFluxStore', function () {
     
     describe ('#addChangeListener()', function () {
         var newProp = 'firstName',
-            newValue = 'Stiorra';
+            newValue = 'Stiorra',
+            changed = false;
         //add listener
         testObj.addChangeListener(function () {
             assert.equal(testObj.get(newProp), newValue);
+            changed = true;
         });
         it ('Should call change handler on update', function () {
-            testObj.Actions().update(newProp, newValue);
+            testObj.Actions().update(testObj.get('id'), newProp, newValue);
+            assert(changed);
         });
     });
     
