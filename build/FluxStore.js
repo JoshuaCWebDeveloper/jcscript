@@ -1,6 +1,6 @@
 /* FluxStore.js
  * Basic Flux store
- * Dependencies: events module
+ * Dependencies: flux module
  * Author: Joshua Carter
  * Created: February 25, 2017
  */
@@ -14,9 +14,11 @@ exports.FluxStore = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = require('events');
+var _flux = require('flux');
 
-var _events2 = _interopRequireDefault(_events);
+var _flux2 = _interopRequireDefault(_flux);
+
+var _utils = require('flux/utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28,55 +30,46 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+//create default dispatcher
+var defaultDispatch = new _flux2.default.Dispatcher();
 //create class for our store
-var FluxStore = function (_Events$EventEmitter) {
-    _inherits(FluxStore, _Events$EventEmitter);
+var FluxStore = function (_Store) {
+    _inherits(FluxStore, _Store);
 
     function FluxStore(Dispatch) {
         _classCallCheck(this, FluxStore);
 
-        //save event to server as our change event
-        var _this = _possibleConstructorReturn(this, (FluxStore.__proto__ || Object.getPrototypeOf(FluxStore)).call(this));
-        //call EventEmitter constructor
-
-
-        _this._CHANGE_EVENT = 'change';
-        //store services
-        _this._Dispatch = Dispatch;
-        //register dispatch
-        _this._RegisterDispatch();
         //init flux actions
+        var _this = _possibleConstructorReturn(this, (FluxStore.__proto__ || Object.getPrototypeOf(FluxStore)).call(this, Dispatch || defaultDispatch));
+        //call FluxStore constructor (pass dispatcher)
+
+
         _this.fluxActions = {};
+        //token used for removing listener
+        _this.listenerTokens = {};
         return _this;
     }
 
-    _createClass(FluxStore, [{
-        key: '_RegisterDispatch',
-        value: function _RegisterDispatch() {
-            var _this2 = this;
+    //override FluxStore.__onDispatch, this method will be registered with the dispatcher
 
-            //if we don't have a dispatch
-            if (!this._Dispatch) {
-                //then don't do anything
-                return;
+
+    _createClass(FluxStore, [{
+        key: '__onDispatch',
+        value: function __onDispatch(action) {
+            //if we can handle this type of action AND
+            //this flux store is supposed to be receiving it
+            if (action.params && action.type in this.fluxActions && (!("_id" in this) || !("id" in action) || action.id == this._id)) {
+                //call the handler for this action
+                this[this.fluxActions[action.type]].apply(this, _toConsumableArray(action.params));
             }
-            //register our callback
-            this._Dispatch.register(function (action) {
-                //if we can handle this type of action AND
-                //this flux store is supposed to be receiving it
-                if (action.params && action.type in _this2.fluxActions && (!("_id" in _this2) || !("id" in action) || action.id == _this2._id)) {
-                    //call the handler for this action
-                    _this2[_this2.fluxActions[action.type]].apply(_this2, _toConsumableArray(action.params));
-                }
-            });
         }
 
-        //triggers change event on our app
+        //to be used instead of FluxStore.__emitChange()
 
     }, {
         key: 'emitChange',
         value: function emitChange() {
-            this.emit(this._CHANGE_EVENT);
+            this.__emitter.emit(this.__changeEvent);
         }
 
         //used to add listeners for our change event
@@ -84,7 +77,8 @@ var FluxStore = function (_Events$EventEmitter) {
     }, {
         key: 'addChangeListener',
         value: function addChangeListener(callback) {
-            this.on(this._CHANGE_EVENT, callback);
+            //save token
+            this.listenerTokens[callback] = this.addListener(callback);
         }
 
         //used to cleanup listeners on our change event
@@ -92,11 +86,13 @@ var FluxStore = function (_Events$EventEmitter) {
     }, {
         key: 'removeChangeListener',
         value: function removeChangeListener(callback) {
-            this.removeListener(this._CHANGE_EVENT, callback);
+            if (this.listenerTokens[callback]) {
+                this.listenerTokens[callback].remove();
+            }
         }
     }]);
 
     return FluxStore;
-}(_events2.default.EventEmitter);
+}(_utils.Store);
 //export FluxStore
 exports.FluxStore = FluxStore;

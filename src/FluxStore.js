@@ -1,60 +1,55 @@
 /* FluxStore.js
  * Basic Flux store
- * Dependencies: events module
+ * Dependencies: flux module
  * Author: Joshua Carter
  * Created: February 25, 2017
  */
 "use strict";
 //include modules
-import Events from 'events';
+import Flux from 'flux';
+import { Store } from 'flux/utils';
+//create default dispatcher
+var defaultDispatch = new Flux.Dispatcher();
 //create class for our store
-var FluxStore = class extends Events.EventEmitter {
+var FluxStore = class extends Store {
     constructor (Dispatch) {
-        //call EventEmitter constructor
-        super();
-        //save event to server as our change event
-        this._CHANGE_EVENT = 'change';
-        //store services
-        this._Dispatch = Dispatch;
-        //register dispatch
-        this._RegisterDispatch();
+        //call FluxStore constructor (pass dispatcher)
+        super(Dispatch || defaultDispatch);
         //init flux actions
         this.fluxActions = {};
+        //token used for removing listener
+        this.listenerTokens = {};
     }
     
-    _RegisterDispatch () {
-        //if we don't have a dispatch
-        if (!this._Dispatch) {
-            //then don't do anything
-            return;
+    //override FluxStore.__onDispatch, this method will be registered with the dispatcher
+    __onDispatch (action) {
+        //if we can handle this type of action AND
+        //this flux store is supposed to be receiving it
+        if (
+            action.params && action.type in this.fluxActions && 
+            (!("_id" in this) || !("id" in action) || action.id == this._id)
+        ) {
+            //call the handler for this action
+            this[this.fluxActions[action.type]](...action.params);
         }
-        //register our callback
-        this._Dispatch.register(action => {
-            //if we can handle this type of action AND
-            //this flux store is supposed to be receiving it
-            if (
-                action.params && action.type in this.fluxActions && 
-                (!("_id" in this) || !("id" in action) || action.id == this._id)
-            ) {
-                //call the handler for this action
-                this[this.fluxActions[action.type]](...action.params);
-            }
-        });
     }
     
-    //triggers change event on our app
+    //to be used instead of FluxStore.__emitChange()
     emitChange () {
-        this.emit(this._CHANGE_EVENT);
+        this.__emitter.emit(this.__changeEvent);
     }
     
     //used to add listeners for our change event
     addChangeListener (callback) {
-        this.on(this._CHANGE_EVENT, callback);
+        //save token
+        this.listenerTokens[callback] = this.addListener(callback);
     }
     
     //used to cleanup listeners on our change event
     removeChangeListener (callback) {
-        this.removeListener(this._CHANGE_EVENT, callback);
+        if (this.listenerTokens[callback]) {
+            this.listenerTokens[callback].remove();
+        }
     }
 };
 //export FluxStore
