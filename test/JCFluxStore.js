@@ -38,7 +38,8 @@ describe('JCFluxStore', function () {
         });
         it ('Should instantiate with custom flux actions', function () {
             //create flux actions
-            var testDispatch = new Flux.Dispatcher(),
+            var testAC = {UPDATE_CUSTOM: 12},
+                testDispatch = new Flux.Dispatcher(),
                 testActions = {
                     updateCustom: function (id, data, val) {
                         testDispatch.dispatch({
@@ -50,13 +51,14 @@ describe('JCFluxStore', function () {
                 },
                 customClass = class extends JCFluxStore {
                     constructor (data, defaults) {
-                        super (data, defaults, testDispatch, testActions, {UPDATE_CUSTOM: 12});
+                        super (data, defaults, testDispatch, testActions, testAC);
+                        this.fluxActions[testAC.UPDATE_CUSTOM] = '';
                         this.RegisterCustomDispatch();
                     }
                     
                     RegisterCustomDispatch () {
-                        assert(this._AC.UPDATE_CUSTOM == 12);
-                        assert(this._Dispatch == testDispatch);
+                        assert(testAC.UPDATE_CUSTOM in this.fluxActions);
+                        assert(this.getDispatcher() == testDispatch);
                     }
                 },
                 //create instance with custom register method
