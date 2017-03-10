@@ -306,6 +306,32 @@ describe('ClientService', function () {
             Service.cancel(Service.getLastCallId());
             return promise;
         });
+        
+        it ('Should send same request after previous request has been completed', function () {
+            //create service
+            var Service = new ClientService(),
+                i = 0;
+            //set response
+            Server.respondWith(function (request) {
+                //respond with i
+                request.respond(jsonResponse[0], jsonResponse[1], String(i));
+                //count response
+                i++;
+            });
+            //make request
+            return Service.get(uri).then(function (ri) {
+                //this is request 0
+                assert(ri === 0);
+                //send same request again
+                return Service.get(uri);
+            }).then(function (ri) {
+                //this is request 1
+                assert(ri === 1);
+            }, function () {
+                //FAILURE
+                assert(false);
+            });
+        });
     });
     
     describe('#Error Statuses', function () {
