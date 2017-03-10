@@ -304,7 +304,6 @@ Received: ${method}, ${url}`);
                 //chain 401 handler to this call
                 call.get('Promise').catch(args => {
                     //FAILURE
-                    var response;
                     //if this is NOT a 401 error
                     if (args[0].status != 401) {
                         //then ignore it

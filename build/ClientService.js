@@ -397,7 +397,6 @@ ClientService = function (_Events$EventEmitter) {
                 //chain 401 handler to this call
                 call.get('Promise').catch(function (args) {
                     //FAILURE
-                    var response;
                     //if this is NOT a 401 error
                     if (args[0].status != 401) {
                         //then ignore it
