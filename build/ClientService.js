@@ -382,6 +382,16 @@ ClientService = function (_Events$EventEmitter) {
             this._calls[requestId] = call;
             //set last call id
             this._lastCallRequestId = requestId;
+            //chain a handler to this call
+            call.get('Promise').then(function () {
+                //SUCCESS
+                //request is complete, remove call
+                delete _this5._calls[requestId];
+            }, function () {
+                //FAILURE
+                //request is complete, remove call
+                delete _this5._calls[requestId];
+            });
             //if we were given authorization
             if (auth) {
                 //chain 401 handler to this call

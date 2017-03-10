@@ -289,6 +289,16 @@ Received: ${method}, ${url}`);
             this._calls[requestId] = call;
             //set last call id
             this._lastCallRequestId = requestId;
+            //chain a handler to this call
+            call.get('Promise').then(() => {
+                //SUCCESS
+                //request is complete, remove call
+                delete this._calls[requestId];
+            }, () => {
+                //FAILURE
+                //request is complete, remove call
+                delete this._calls[requestId];
+            });
             //if we were given authorization
             if (auth) {
                 //chain 401 handler to this call
