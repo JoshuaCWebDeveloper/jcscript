@@ -45,8 +45,8 @@ var FluxStore = function (_Store) {
 
 
         _this.fluxActions = {};
-        //token used for removing listener
-        _this.listenerTokens = {};
+        //track tokens used for removing listener
+        _this.listenerTokens = [];
         return _this;
     }
 
@@ -78,7 +78,7 @@ var FluxStore = function (_Store) {
         key: 'addChangeListener',
         value: function addChangeListener(callback) {
             //save token
-            this.listenerTokens[callback] = this.addListener(callback);
+            this.listenerTokens.push(this.addListener(callback));
         }
 
         //used to cleanup listeners on our change event
@@ -86,8 +86,15 @@ var FluxStore = function (_Store) {
     }, {
         key: 'removeChangeListener',
         value: function removeChangeListener(callback) {
-            if (this.listenerTokens[callback]) {
-                this.listenerTokens[callback].remove();
+            //loop tokens
+            for (var i = 0; i < this.listenerTokens.length; i++) {
+                //if this token is for our given callback
+                if (this.listenerTokens[i].listener === callback) {
+                    //remove it
+                    this.listenerTokens[i].remove();
+                    //stop searching
+                    break;
+                }
             }
         }
     }]);

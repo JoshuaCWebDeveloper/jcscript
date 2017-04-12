@@ -17,8 +17,8 @@ var FluxStore = class extends Store {
         super(Dispatch || defaultDispatch);
         //init flux actions
         this.fluxActions = {};
-        //token used for removing listener
-        this.listenerTokens = {};
+        //track tokens used for removing listener
+        this.listenerTokens = [];
     }
     
     //override FluxStore.__onDispatch, this method will be registered with the dispatcher
@@ -42,13 +42,20 @@ var FluxStore = class extends Store {
     //used to add listeners for our change event
     addChangeListener (callback) {
         //save token
-        this.listenerTokens[callback] = this.addListener(callback);
+        this.listenerTokens.push(this.addListener(callback));
     }
     
     //used to cleanup listeners on our change event
     removeChangeListener (callback) {
-        if (this.listenerTokens[callback]) {
-            this.listenerTokens[callback].remove();
+        //loop tokens
+        for (let i=0; i<this.listenerTokens.length; i++) {
+            //if this token is for our given callback
+            if (this.listenerTokens[i].listener === callback) {
+                //remove it
+                this.listenerTokens[i].remove();
+                //stop searching
+                break;
+            }
         }
     }
 };
