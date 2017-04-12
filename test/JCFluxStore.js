@@ -86,6 +86,28 @@ describe('JCFluxStore', function () {
             testObj.Actions().update(testObj.get('id'), newProp, newValue);
             assert(changed);
         });
+        it ('Should call the correct binding when two bindings of the same function are added', function () {
+            var changed = {
+                    1: false,
+                    2: false
+                },
+                //create listeners
+                listenerBase = function () {
+                    changed[this.instance] = true;
+                },
+                listener1 = listenerBase.bind({instance: 1}),
+                listener2 = listenerBase.bind({instance: 2}),
+                //create new JC object
+                newTestObj = new JCFluxStore (data, defaults);
+            //add both listeners
+            newTestObj.addChangeListener(listener1);
+            newTestObj.addChangeListener(listener2);
+            //make a change
+            newTestObj.Actions().update(newTestObj.get('id'), {});
+            //the both listeners should have been called
+            assert(changed[1]);
+            assert(changed[2]);
+        });
     });
     
     describe ('#removeChangeListener()', function () {
@@ -99,8 +121,33 @@ describe('JCFluxStore', function () {
             //remove listener
             testObj.removeChangeListener(listener);
             //update with data
-            testObj.Actions().update({});
+            testObj.Actions().update(testObj.get('id'), {});
             assert(notChanged);
+        });
+        it ('Should remove the correct binding when two bindings of the same function are added', function () {
+            var changed = {
+                    1: false,
+                    2: false
+                },
+                //create listeners
+                listenerBase = function () {
+                    assert(this.instance == 2);
+                    changed[this.instance] = true;
+                },
+                listener1 = listenerBase.bind({instance: 1}),
+                listener2 = listenerBase.bind({instance: 2}),
+                //create new JC object
+                newTestObj = new JCFluxStore (data, defaults);
+            //add both listeners
+            newTestObj.addChangeListener(listener1);
+            newTestObj.addChangeListener(listener2);
+            //remove the first listener
+            newTestObj.removeChangeListener(listener1);
+            //make a change
+            newTestObj.Actions().update(newTestObj.get('id'), {});
+            //the second listener should have been called, not the first
+            assert(!changed[1]);
+            assert(changed[2]);
         });
     });
 });
