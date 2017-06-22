@@ -150,6 +150,51 @@ describe('JCFluxStore', function () {
             assert(changed[2]);
         });
     });
+    
+    describe ('#destroy()', function () {
+        it ('Should unregister listener from dispatcher', function () {
+            //create new disaptcher
+            var Dispatch = new Flux.Dispatcher(),
+                //create new object
+                newTestObj = new JCFluxStore(data, defaults, Dispatch),
+                //get dispatch token
+                dispatchToken = newTestObj._dispatchToken;
+            //call destroy method
+            newTestObj.destroy();
+            //token should have been unregistered
+            assert(!(dispatchToken in Dispatch._callbacks));
+        });
+        
+        it ('Should remove all actions from store', function () {
+            //create new object
+            var newTestObj = new JCFluxStore(data, defaults);
+            //call destroy method
+            newTestObj.destroy();
+            //actions should be gone
+            assert(!newTestObj.Actions());
+            assert(!newTestObj._AC);
+            assert(!newTestObj.fluxActions);
+        });
+        
+        it ('Should removed change handlers', function () {
+            var notChanged = true,
+                listener = function () {
+                    assert(false);
+                    notChanged = false;
+                },
+                //create new test object
+                newTestObj = new JCFluxStore(data, defaults);
+            //add listener
+            newTestObj.addChangeListener(listener);
+            //call destroy method
+            newTestObj.destroy();
+            //manually trigger change
+            newTestObj.emitChange();
+            //handler should not have been called
+            assert(notChanged);
+        });
+        
+    });
 });
 
 describe('FluxStore', function () {
