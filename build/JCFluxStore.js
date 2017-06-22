@@ -135,13 +135,26 @@ var JCFluxStore = function (_FluxStore) {
             //our store has likely changed
             this.emitChange();
         }
+
+        //disables store, and removes registered listeners and actions
+
+    }, {
+        key: 'destroy',
+        value: function destroy() {
+            //first, remove our actions
+            this._Actions = null;
+            this._AC = null;
+            //then, call destroy on our parent
+            this._destroyStore();
+        }
     }]);
 
     return JCFluxStore;
 }(_FluxStore2.FluxStore);
-//child will have method the same name as the parent
+//child will have methods the same name as the parent
 
 
 JCFluxStore.prototype._updateData = _JCObject.JCObject.prototype.update;
+JCFluxStore.prototype._destroyStore = _FluxStore2.FluxStore.prototype.destroy;
 //export
 exports.JCFluxStore = JCFluxStore;

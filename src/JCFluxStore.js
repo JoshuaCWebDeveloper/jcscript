@@ -83,8 +83,19 @@ class JCFluxStore extends FluxStore {
         this.emitChange();
     }
     
+    
+    //disables store, and removes registered listeners and actions
+    destroy () {
+        //first, remove our actions
+        this._Actions = null;
+        this._AC = null;
+        //then, call destroy on our parent
+        this._destroyStore();
+    }
+    
 }
-//child will have method the same name as the parent
+//child will have methods the same name as the parent
 JCFluxStore.prototype._updateData = JCObject.prototype.update;
+JCFluxStore.prototype._destroyStore = FluxStore.prototype.destroy;
 //export
 export { JCFluxStore };
