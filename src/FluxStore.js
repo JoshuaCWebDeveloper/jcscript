@@ -13,8 +13,12 @@ var defaultDispatch = new Flux.Dispatcher();
 //create class for our store
 var FluxStore = class extends Store {
     constructor (Dispatch) {
+        //determine disaptch to use
+        var dispatcher = Dispatch || defaultDispatch;
         //call FluxStore constructor (pass dispatcher)
-        super(Dispatch || defaultDispatch);
+        super(dispatcher);
+        //save dispatcher
+        this.__Dispatch = dispatcher;
         //init flux actions
         this.fluxActions = {};
         //track tokens used for removing listener
@@ -58,6 +62,21 @@ var FluxStore = class extends Store {
             }
         }
     }
+    
+    //disables store, and removes registered listeners and actions
+    destroy () {
+        //first, remove the dispatch listener
+        this.__Dispatch.unregister(this._dispatchToken);
+        //next, remove all of our flux actions
+        this.fluxActions = null;
+        //now, loop through and remove each change listener
+        for (let i=0; i<this.listenerTokens.length; i++) {
+            this.listenerTokens[i].remove();
+        }
+        //finally, remove our listener tokens
+        this.listenerTokens = null;
+    }
+    
 };
 //export FluxStore
 export { FluxStore };

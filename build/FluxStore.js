@@ -39,11 +39,15 @@ var FluxStore = function (_Store) {
     function FluxStore(Dispatch) {
         _classCallCheck(this, FluxStore);
 
-        //init flux actions
-        var _this = _possibleConstructorReturn(this, (FluxStore.__proto__ || Object.getPrototypeOf(FluxStore)).call(this, Dispatch || defaultDispatch));
+        //determine disaptch to use
+        var dispatcher = Dispatch || defaultDispatch;
         //call FluxStore constructor (pass dispatcher)
 
+        //save dispatcher
+        var _this = _possibleConstructorReturn(this, (FluxStore.__proto__ || Object.getPrototypeOf(FluxStore)).call(this, dispatcher));
 
+        _this.__Dispatch = dispatcher;
+        //init flux actions
         _this.fluxActions = {};
         //track tokens used for removing listener
         _this.listenerTokens = [];
@@ -96,6 +100,23 @@ var FluxStore = function (_Store) {
                     break;
                 }
             }
+        }
+
+        //disables store, and removes registered listeners and actions
+
+    }, {
+        key: 'destroy',
+        value: function destroy() {
+            //first, remove the dispatch listener
+            this.__Dispatch.unregister(this._dispatchToken);
+            //next, remove all of our flux actions
+            this.fluxActions = null;
+            //now, loop through and remove each change listener
+            for (var i = 0; i < this.listenerTokens.length; i++) {
+                this.listenerTokens[i].remove();
+            }
+            //finally, remove our listener tokens
+            this.listenerTokens = null;
         }
     }]);
 
