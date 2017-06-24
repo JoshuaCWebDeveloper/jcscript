@@ -34,6 +34,8 @@ var _FluxStore2 = require('./FluxStore.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -65,6 +67,20 @@ var JCActionsService = function () {
                 params: [data, val]
             });
         }
+
+        // resets all properties to default values (or only specific properties if specified)
+        // - id (int) The id of the object to reset
+        // - prop (str, array -- optional) The name(s) of the property(ies) to reset (defaults to all properties)
+
+    }, {
+        key: 'reset',
+        value: function reset(id, prop) {
+            this._Dispatcher.dispatch({
+                type: this._ACTIONS.RESET,
+                id: id,
+                params: Array.from(arguments).slice(1)
+            });
+        }
     }]);
 
     return JCActionsService;
@@ -72,7 +88,8 @@ var JCActionsService = function () {
 
 //create set of constants
 ACTIONS = {
-    UPDATE: "JCSTORE1"
+    UPDATE: "JCSTORE1",
+    RESET: "JCSTORE2"
 },
 
 //create new dispatcher
@@ -108,6 +125,7 @@ var JCFluxStore = function (_FluxStore) {
         _this._AC = AC || ACTIONS;
         //create flux actions
         _this.fluxActions[_this._AC.UPDATE] = "update";
+        _this.fluxActions[_this._AC.RESET] = "reset";
 
         //update our store with the given data
         _this._updateData(data);
@@ -136,6 +154,17 @@ var JCFluxStore = function (_FluxStore) {
             this.emitChange();
         }
 
+        // accessor for JCObject.reset(), triggers change on store
+
+    }, {
+        key: 'reset',
+        value: function reset(prop) {
+            //reset this
+            this._resetData.apply(this, _toConsumableArray(Array.from(arguments)));
+            //our store has likely changed
+            this.emitChange();
+        }
+
         //disables store, and removes registered listeners and actions
 
     }, {
@@ -155,6 +184,7 @@ var JCFluxStore = function (_FluxStore) {
 
 
 JCFluxStore.prototype._updateData = _JCObject.JCObject.prototype.update;
+JCFluxStore.prototype._resetData = _JCObject.JCObject.prototype.reset;
 JCFluxStore.prototype._destroyStore = _FluxStore2.FluxStore.prototype.destroy;
 //export
 exports.JCFluxStore = JCFluxStore;

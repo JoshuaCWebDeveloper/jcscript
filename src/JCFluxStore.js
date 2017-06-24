@@ -32,10 +32,22 @@ var JCActionsService = class {
                 params: [data, val]
             });
         }
+    
+        // resets all properties to default values (or only specific properties if specified)
+        // - id (int) The id of the object to reset
+        // - prop (str, array -- optional) The name(s) of the property(ies) to reset (defaults to all properties)
+        reset (id, prop) {
+            this._Dispatcher.dispatch({
+                type: this._ACTIONS.RESET,
+                id: id,
+                params: Array.from(arguments).slice(1)
+            });
+        }
     },
     //create set of constants
     ACTIONS = {
-        UPDATE: "JCSTORE1"
+        UPDATE: "JCSTORE1",
+        RESET: "JCSTORE2"
     },
     //create new dispatcher
     JCDispatch = new Flux.Dispatcher(),
@@ -62,6 +74,7 @@ class JCFluxStore extends FluxStore {
         this._AC = AC || ACTIONS;
         //create flux actions
         this.fluxActions[this._AC.UPDATE] = "update";
+        this.fluxActions[this._AC.RESET] = "reset";
         
         //update our store with the given data
         this._updateData(data);
@@ -83,6 +96,14 @@ class JCFluxStore extends FluxStore {
         this.emitChange();
     }
     
+    // accessor for JCObject.reset(), triggers change on store
+    reset (prop) {
+        //reset this
+        this._resetData(...Array.from(arguments));
+        //our store has likely changed
+        this.emitChange();
+    }
+    
     
     //disables store, and removes registered listeners and actions
     destroy () {
@@ -96,6 +117,7 @@ class JCFluxStore extends FluxStore {
 }
 //child will have methods the same name as the parent
 JCFluxStore.prototype._updateData = JCObject.prototype.update;
+JCFluxStore.prototype._resetData = JCObject.prototype.reset;
 JCFluxStore.prototype._destroyStore = FluxStore.prototype.destroy;
 //export
 export { JCFluxStore };
