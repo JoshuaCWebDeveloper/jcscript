@@ -151,6 +151,34 @@ describe('JCFluxStore', function () {
         });
     });
     
+    describe ('#Actions:reset()', function () {
+        it ('Should call reset on JCObject', function () {
+            //create new
+            var newObj = new JCFluxStore(data, defaults);
+            //udpate
+            newObj.Actions().update(newObj.get('id'), data);
+            //reset all
+            newObj.Actions().reset(newObj.get('id'));
+            //should be reset
+            for (var prop in defaults) {
+                assert(newObj.get(prop) == defaults[prop]);
+            }
+        });
+        it ('Should call change handler', function () {
+            var changed = false,
+                listener = function () {
+                    changed = true;
+                },
+                newObj = new JCFluxStore(data, defaults);
+            //add listener
+            newObj.addChangeListener(listener);
+            //reset all
+            newObj.Actions().reset(newObj.get('id'));
+            //should have changed
+            assert(changed);
+        });
+    });
+    
     describe ('#destroy()', function () {
         it ('Should unregister listener from dispatcher', function () {
             //create new disaptcher

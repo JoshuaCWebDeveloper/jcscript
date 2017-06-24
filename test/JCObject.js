@@ -81,4 +81,42 @@ describe('JCObject', function () {
         });
     });
     
+    describe ('#reset()', function () {
+        it ('Should reset a single value', function () {
+            //create new
+            var newObj = new JCObject(defaults);
+            //udpate
+            newObj.update(data);
+            //reset
+            newObj.reset('firstName');
+            //should be reset
+            assert(newObj.get('firstName') == defaults.firstName);
+        });
+        it ('Should reset multiple values', function () {
+            //create new
+            var newObj = new JCObject(defaults),
+                toReset = ['firstName', 'lastName'];
+            //udpate
+            newObj.update(data);
+            //reset
+            newObj.reset(toReset);
+            //should be reset
+            for (var i=0; i<toReset.length; i++) {
+                assert(newObj.get(toReset[i]) == defaults[toReset[i]]);
+            }
+        });
+        it ('Should reset all values by default', function () {
+            //create new
+            var newObj = new JCObject(defaults);
+            //udpate
+            newObj.update(data);
+            //reset all
+            newObj.reset();
+           //should be reset
+            for (var prop in defaults) {
+                assert(newObj.get(prop) == defaults[prop]);
+            }
+        });
+    });
+    
 });
