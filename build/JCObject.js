@@ -32,6 +32,8 @@ var JCObject = function () {
         _classCallCheck(this, JCObject);
 
         var val;
+        //save model
+        this.__model = model;
         //default value for id
         this._id = 0;
         //create additional props 
@@ -124,6 +126,44 @@ var JCObject = function () {
                     //extend default props with new data
                     (0, _extend2.default)(this, newData);
                 }
+            return this;
+        }
+
+        // resets all properties to default values (or only specific properties if specified)
+        // - prop (str, array -- optional) The name(s) of the property(ies) to reset (defaults to all properties)
+        // - returns (obj) This
+
+    }, {
+        key: "reset",
+        value: function reset(prop) {
+            var toReset = [];
+            //if we received no arguments
+            if (!arguments.length) {
+                //then we are resetting everything
+                toReset = Object.keys(this.__model);
+            }
+            //else, if we received a prop name
+            else if (typeof prop == "string") {
+                    //we will reset this single prop
+                    toReset.push(prop);
+                }
+                //else, if we received an array
+                else if (Array.isArray(prop)) {
+                        //we must have received multiple props
+                        toReset = prop;
+                    } else {
+                        //else, we have a problem
+                        throw new Error("JCObject.reset() expects a string or array, " + (typeof prop === "undefined" ? "undefined" : _typeof(prop)) + " given.");
+                    }
+            //loop props that we are to reset
+            for (var i = 0; i < toReset.length; i++) {
+                //if this prop was in our model
+                if (toReset[i] in this.__model) {
+                    //reset it
+                    this.update(toReset[i], this.__model[toReset[i]]);
+                }
+            }
+            //return this
             return this;
         }
     }]);
