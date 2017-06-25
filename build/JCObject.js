@@ -97,25 +97,49 @@ var JCObject = function () {
 
         //GETTERS
         // gets a property value
-        // - prop (string, array) The name(s) of the property(ies) to get
+        // - propSpec (str, array -- optional) The name(s) of the property(ies) to get (defaults to all properties)
         // - returns (all) The property value, or an object of all properties requested
 
     }, {
         key: "get",
-        value: function get(prop) {
-            var collection;
-            //if we received a prop name
-            if (typeof prop == "string") {
-                //return value using converted single prop
-                return this[this.__convertProp(prop)];
-            } //else, we must have received multiple props
+        value: function get() {
+            var props = this.__parsePropSpec(arguments),
+                collection = {};
             //loop props
-            collection = {};
-            for (var i = 0; i < prop.length; i++) {
+            for (var i = 0; i < props.length; i++) {
+                var val = void 0;
+                //if this property is NOT in the model
+                if (!(props[i] in this.__model)) {
+                    //then there is nothing to get
+                    continue;
+                } //else, this is a valid prop
+                //get prop value
+                val = this[this.__convertProp(props[i])];
+                //if value is object
+                if ((typeof val === "undefined" ? "undefined" : _typeof(val)) == "object") {
+                    //then we need to copy it, if it is an array
+                    if (Array.isArray(val)) {
+                        //slice it
+                        val = val.slice();
+                    } else {
+                        //else it is an object (or null), extend it
+                        val = (0, _extend2.default)({}, val);
+                    }
+                }
                 //add prop to collection
-                collection[prop[i]] = this[this.__convertProp(prop[i])];
+                collection[props[i]] = val;
             }
-            //return collection     
+            //if there are no values
+            if (!Object.keys(collection).length) {
+                //there was nothing to get
+                return;
+            }
+            //if there was only one prop
+            if (props.length == 1) {
+                //return the single value
+                return collection[props[0]];
+            }
+            //else, return collection     
             return collection;
         }
 
