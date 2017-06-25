@@ -16,15 +16,12 @@ describe('JCObject', function () {
     var defaults = {
             firstName: '',
             lastName: '',
-            projects: {}
+            years: 0
         },
         data = {
             firstName: 'Joshua',
             lastName: 'Carter',
-            projects: {
-                1: 'JCScript',
-                2: 'EvilAI'
-            }
+            years: 2
         },
         testObj;
     

@@ -17,7 +17,7 @@ describe('JCFluxStore', function () {
     var defaults = {
             firstName: '',
             lastName: '',
-            projects: {}
+            years: 0
         },
         data = {
             firstName: 'Joshua'

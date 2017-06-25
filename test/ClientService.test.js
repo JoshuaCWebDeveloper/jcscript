@@ -208,10 +208,10 @@ describe('ClientService', function () {
             testAuthCall = TestAuth._calls[TestAuth.getLastCallId()];
             testRejectCall = TestReject._calls[TestReject.getLastCallId()];
             //test service options and request options
-            assert(testAuthCall.get("headers")['Authorization'] == requestOpts.auth);
-            assert(testAuthCall.get("reject") == serviceOpts.reject);
-            assert(testRejectCall.get("reject") == requestOpts.reject);
-            assert(testRejectCall.get("headers")['Authorization'] == serviceOpts.auth);
+            assert.equal(testAuthCall.get("headers")['Authorization'], requestOpts.auth);
+            assert.equal(testAuthCall.get("reject")[0], serviceOpts.reject[0]);
+            assert.equal(testRejectCall.get("reject")[1], requestOpts.reject[1]);
+            assert.equal(testRejectCall.get("headers")['Authorization'], serviceOpts.auth);
         });
         
         it ('Can be passed from get()', function () {
@@ -235,10 +235,10 @@ describe('ClientService', function () {
             //get call
             testCall = Test._calls[Test.getLastCallId()];
             //test service options and ajax props
-            assert(testCall.get("headers")['Authorization'] == serviceOpts.auth);
-            assert(testCall.get("reject") == serviceOpts.reject);
-            assert(testCall.get("ajaxProps").global == ajaxProps.global);
-            assert(testCall.get("ajaxProps").ifModified == ajaxProps.ifModified);
+            assert.equal(testCall.get("headers")['Authorization'], serviceOpts.auth);
+            assert.equal(testCall.get("reject")[0], serviceOpts.reject[0]);
+            assert.equal(testCall.get("ajaxProps").global, ajaxProps.global);
+            assert.equal(testCall.get("ajaxProps").ifModified, ajaxProps.ifModified);
         });
         
         
