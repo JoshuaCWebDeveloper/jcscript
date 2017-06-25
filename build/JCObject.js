@@ -43,7 +43,7 @@ var JCObject = function () {
             //if this prop doesn't have a private name
             if (prop.indexOf("_") != 0) {
                 //make it so
-                prop = "_" + prop;
+                prop = this.__convertProp(prop);
             }
             //init property
             this[prop] = val;
@@ -52,17 +52,13 @@ var JCObject = function () {
         this._id = Math.floor(Math.random() * 1000000);
     }
 
-    //converts a property's name to a property in this entry
+    //converts a property's name to a property in this object
 
 
     _createClass(JCObject, [{
-        key: "_convertProp",
-        value: function _convertProp(prop) {
-            //if this prop is private, update the name
-            if (!(prop in this) && "_" + prop in this) {
-                prop = "_" + prop;
-            }
-            return prop;
+        key: "__convertProp",
+        value: function __convertProp(prop) {
+            return "_" + prop;
         }
 
         //GETTERS
@@ -77,13 +73,13 @@ var JCObject = function () {
             //if we received a prop name
             if (typeof prop == "string") {
                 //return value using converted single prop
-                return this[this._convertProp(prop)];
+                return this[this.__convertProp(prop)];
             } //else, we must have received multiple props
             //loop props
             collection = {};
             for (var i = 0; i < prop.length; i++) {
                 //add prop to collection
-                collection[prop[i]] = this[this._convertProp(prop[i])];
+                collection[prop[i]] = this[this.__convertProp(prop[i])];
             }
             //return collection     
             return collection;
