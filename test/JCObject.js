@@ -79,6 +79,28 @@ describe('JCObject', function () {
         it ('Should return `this`', function () {
             assert.equal(fromUpdate, testObj);
         });
+        it ('Should not affect properties not defined in model', function () {
+            //create new
+            var newObj = new JCObject(defaults);
+            //custom prop
+            newObj.customProp = 1;
+            //udpate
+            newObj.update("customProp", 2);
+            //should not have changed
+            assert(newObj.customProp == 1);
+        });
+        it ('Should be able to update properties that are currently undefined', function () {
+            //create some defaults
+            var model = {
+                    name: undefined
+                },
+                //new objwect
+                newObj = new JCObject(model);
+            //udpate
+            newObj.update("name", 3);
+            //should now be undefined
+            assert(newObj.get("name") == 3);
+        });
     });
     
     describe ('#reset()', function () {
