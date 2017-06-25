@@ -29,7 +29,7 @@ var Call = class extends JCObject {
                 dataType: 'json',    //the type of data in the response (accepts header)
                 contentType: 'application/json', //the type of data in the request
                 data: {},    //request data
-                headers: [],    //request headers to set
+                headers: {},    //request headers to set
                 ajaxProps: {},  //extra properties to pass to jQuery.ajax()
                 $jqXHR: undefined,
                 Promise: undefined
@@ -255,7 +255,7 @@ var Call = class extends JCObject {
                 //set reject
                 reject = serviceProps.reject || this._reject,
                 //init headers
-                headers = [],
+                headers = {},
                 call, requestId;
             //if we didn't get a method and url
             if (!method || !url) {

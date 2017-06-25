@@ -65,7 +65,7 @@ var Call = function (_JCObject) {
             dataType: 'json', //the type of data in the response (accepts header)
             contentType: 'application/json', //the type of data in the request
             data: {}, //request data
-            headers: [], //request headers to set
+            headers: {}, //request headers to set
             ajaxProps: {}, //extra properties to pass to jQuery.ajax()
             $jqXHR: undefined,
             Promise: undefined
@@ -348,7 +348,7 @@ ClientService = function (_Events$EventEmitter) {
             reject = serviceProps.reject || this._reject,
 
             //init headers
-            headers = [],
+            headers = {},
                 call,
                 requestId;
             //if we didn't get a method and url
