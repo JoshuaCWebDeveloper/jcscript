@@ -125,7 +125,6 @@ var JCObject = class {
         //                            value to update it to
         // returns (obj) This
         update (data, val) {
-            var newData = {};
             //if we received a single prop and value
             if (typeof data == "string") {
                 //if this property is NOT in the model
