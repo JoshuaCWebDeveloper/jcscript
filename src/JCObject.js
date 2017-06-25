@@ -70,28 +70,24 @@ var JCObject = class {
             var newData = {};
             //if we received a single prop and value
             if (typeof data == "string") {
-                //if this prop is private, update the name
-                data = this._convertProp(data);
-                //if this property doesn't exist, don't create it
-                if (typeof this[data] == "undefined") {
+                //if this property is NOT in the model
+                if (!(data in this.__model)) {
+                    //then don't attempt to create it
                     return this;
-                }
+                }   //else, this is a valid prop
                 //update the single prop
-                this[data] = val;
+                this[this.__convertProp(data)] = val;
             }
             //if we received data
             else if (typeof data == "object" && data !== null) {
                 //loop the data
                 for (var prop in data) {
-                    //if this prop is private, update the name
-                    //if this property exists
-                    if (typeof this[this._convertProp(prop)] != "undefined") {
-                        //add it to new data
-                        newData[this._convertProp(prop)] = data[prop];
+                    //if this prop is in our model
+                    if (prop in this.__model) {
+                        //update this prop
+                        this[this.__convertProp(prop)] = data[prop];
                     }
                 }
-                //extend default props with new data
-                extend(this, newData);
             }
             return this;
         }
