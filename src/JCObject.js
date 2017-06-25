@@ -12,15 +12,20 @@ var JCObject = class {
         // - model (obj) An object of property names and default values 
         //               to use to create the object
         constructor (model) {
-            var val;
-            //save model
-            this.__model = model;
-            //default value for id
-            this._id = 0;
-            //create additional props 
-            //(given default id will overwrite above default)
+            //save copy of model (include undefined values in copy)
+            this.__model = {};
             for (let prop in model) {
-                val = model[prop];
+                this.__model[prop] = model[prop];
+            }
+            //if id isn't in model
+            if (!("id" in this.__model)) {
+                //add it (default value 0)
+                this.__model.id = 0;
+            }
+            //create props 
+            //(given default id will overwrite above default)
+            for (let prop in this.__model) {
+                let val = this.__model[prop];
                 //if this prop doesn't have a private name
                 if (prop.indexOf("_") != 0) {
                     //make it so
@@ -37,6 +42,34 @@ var JCObject = class {
         __convertProp (prop) {
             return "_" + prop;
         }
+        
+        //parses property spec agument
+        __parsePropSpec (propArgs) {
+            //init list of props
+            var props = [];
+            //if we received no arguments
+            if (!propArgs.length) {
+                //then use all props
+                props = Object.keys(this.__model);
+            }
+            //else, if we received a prop name
+            else if (typeof propArgs[0] == "string") {
+                //we will reset this single prop
+                props.push(propArgs[0]);
+            }
+            //else, if we received an array
+            else if (Array.isArray(propArgs[0])) {
+                //we must have received multiple props
+                props = propArgs[0];
+             }
+            else {
+                //else, we have a problem
+                throw new Error(`JCObject prop spec expects a string, array, or nothing, ${typeof prop} given.`);
+            }
+            //return parsed props
+            return props;
+        }
+        
         
         //GETTERS
         // gets a property value
@@ -93,29 +126,10 @@ var JCObject = class {
         }
         
         // resets all properties to default values (or only specific properties if specified)
-        // - prop (str, array -- optional) The name(s) of the property(ies) to reset (defaults to all properties)
+        // - propSpec (str, array -- optional) The name(s) of the property(ies) to reset (defaults to all properties)
         // - returns (obj) This
-        reset (prop) {
-            var toReset = [];
-            //if we received no arguments
-            if (!arguments.length) {
-                //then we are resetting everything
-                toReset = Object.keys(this.__model);
-            }
-            //else, if we received a prop name
-            else if (typeof prop == "string") {
-                //we will reset this single prop
-                toReset.push(prop);
-            }
-            //else, if we received an array
-            else if (Array.isArray(prop)) {
-                //we must have received multiple props
-                toReset = prop;
-             }
-            else {
-                //else, we have a problem
-                throw new Error(`JCObject.reset() expects a string or array, ${typeof prop} given.`);
-            }
+        reset () {
+            var toReset = this.__parsePropSpec(arguments);
             //loop props that we are to reset
             for (let i=0; i<toReset.length; i++) {
                 //if this prop was in our model
