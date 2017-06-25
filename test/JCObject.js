@@ -1,12 +1,13 @@
 /* JCObject.js
  * Tests JCObject
- * Dependencies: assert, Q modules, mocha context
+ * Dependencies: assert, extend, Q modules, mocha context
  * Author: Joshua Carter
  * Created: November 6, 2016
  */
 "use strict";
 //include dependencies
 var assert = require('assert'),
+    extend = require('extend'),
     JCObject = require('../build/index').JCObject,
     Q = require('q');
 
@@ -47,13 +48,76 @@ describe('JCObject', function () {
     }
     
     describe ('#get()', function () {
-        it ('Should return an object from a given array', function () {
+        it ('Should fetch a single given property', function () {
+            //new object
+            var newObj = new JCObject(defaults);
+            //get single prop
+            assert.equal(newObj.get("firstName"), defaults.firstName);
+        });
+        it ('Should return an object when given an array', function () {
             //get data
-            var foundData = testObj.get(Object.keys(data));
+            var foundData = testObj.get(Object.keys(defaults));
             //check data
-            for (var prop in data) {
+            for (var prop in defaults) {
                 assert.equal(foundData[prop], defaults[prop]);
             }
+        });
+        it ('Should return all properties by default', function () {
+            //new object
+            var newObj = new JCObject(defaults),
+                //get data
+                foundData = newObj.get();
+            //should return all data
+            assert.equal(Object.keys(foundData).length, Object.keys(data).length);
+            //check data
+            for (var prop in defaults) {
+                assert.equal(foundData[prop], defaults[prop]);
+            }
+        });
+        it ('Should return copies of object values', function () {
+            //copy data
+            var thisData = extend({
+                    projects: {
+                        1: 'JCScript',
+                        2: 'EvilAI'
+                    }
+                }, data),
+                //copy defaults
+                thisDefaults = extend({
+                    projects: {}
+                }, defaults),
+                //new object
+                newObj = new JCObject(thisDefaults),
+                thisProj = {};
+            //update with data
+            newObj.update(thisData);
+            //get projects
+            thisProj = newObj.get("projects");
+            //change object value
+            thisProj["2"] = "NewAPI";
+            //should not have changed
+            assert.equal(newObj.get("projects")["2"], thisData.projects["2"]);
+        });
+        it ('Should return copies of array values', function () {
+            //copy data
+            var thisData = extend({
+                    projects: ['JCScript', 'EvilAI']
+                }, data),
+                //copy defaults
+                thisDefaults = extend({
+                    projects: []
+                }, defaults),
+                //new object
+                newObj = new JCObject(thisDefaults),
+                thisProj = {};
+            //update with data
+            newObj.update(thisData);
+            //get projects
+            thisProj = newObj.get("projects");
+            //change object value
+            thisProj[1] = "NewAPI";
+            //should not have changed
+            assert.equal(newObj.get("projects")[1], thisData.projects[1]);
         });
     });
         
