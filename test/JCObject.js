@@ -19,6 +19,7 @@ describe('JCObject', function () {
             years: 0
         },
         data = {
+            id: 345,
             firstName: 'Joshua',
             lastName: 'Carter',
             years: 2
