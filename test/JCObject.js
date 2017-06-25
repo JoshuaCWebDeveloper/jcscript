@@ -96,7 +96,7 @@ describe('JCObject', function () {
             //udpate
             newObj.update("name", 3);
             //should now be undefined
-            assert(newObj.get("name") == 3);
+            assert.equal(newObj.get("name"), 3);
         });
     });
     

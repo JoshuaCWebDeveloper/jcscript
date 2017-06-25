@@ -161,7 +161,7 @@ describe('JCFluxStore', function () {
             newObj.Actions().reset(newObj.get('id'));
             //should be reset
             for (var prop in defaults) {
-                assert(newObj.get(prop) == defaults[prop]);
+                assert.equal(newObj.get(prop), defaults[prop]);
             }
         });
         it ('Should call change handler', function () {
