@@ -1,4 +1,4 @@
-/* JCFluxStore.js
+/* JCFluxStore.test.js
  * Tests JCFluxStore
  * Dependencies: assert, flux modules, JCFluxStore, FluxStore classes, mocha context
  * Author: Joshua Carter

@@ -1,4 +1,4 @@
-/* JCObject.js
+/* JCObject.test.js
  * Tests JCObject
  * Dependencies: assert, extend, Q modules, mocha context
  * Author: Joshua Carter
