@@ -172,6 +172,9 @@ A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject wit
 Add/remove a change listener that gets called when change events are triggered in the store.
 - callback (func) The listener to register
 
+##### destroy ()
+Disables store and removes registered listeners and actions
+
 #### Built-In Actions
 
 ##### update (id, data[, val]) -> [JCFluxStore.update()](#jcflux-update)
@@ -194,6 +197,9 @@ A basic [Flux](https://facebook.github.io/flux/) store meant to be extended by c
 ##### removeChangeListener (callback)
 Add/remove a change listener that gets called when change events are triggered in the store.
 - callback (func) The listener to register
+
+##### destroy ()
+Disables store and removes registered listeners and actions
 
 ##### Properties
 - fluxActions (obj) Add actions to be called from the dispatcher
