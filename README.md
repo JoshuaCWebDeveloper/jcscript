@@ -12,7 +12,7 @@ This is a collection of JavaScripts to aid in the development of JS projects
     * [FluxStore](#fluxstore)
   + [ClientService](#clientservice)
 
-##<a name="installation"></a>Installation/Setup
+## <a name="installation"></a>Installation/Setup
 Run:
 
 `npm install jcscript`
@@ -27,7 +27,7 @@ var JCObject = JCScript.JCObject;
 
 `import { JCObject } from 'jcscript'`
 
-##<a name="examples"></a>Examples
+## <a name="examples"></a>Examples
 
 Use `JCObject` to create and access a simple object
 
@@ -119,22 +119,22 @@ Service.ajax(
 );
 ```
 
-##<a name="api"></a>API
+## <a name="api"></a>API
 
-###<a name="jcobject"></a>JCObject
+### <a name="jcobject"></a>JCObject
 
 A basic object class with getter and setter methods that can be inherited from when creating simple data stores.
 
-#####constructor ([model])
+##### constructor ([model])
 - model (obj) An object of property names and default values 
               to use to create the object
         
-#####<a name="jcobject-get"></a>get (prop)
+##### <a name="jcobject-get"></a>get (prop)
 Gets a property value.
 - prop (string, array) The name(s) of the property(ies) to get
 - returns (all) The property value, or an object of all properties requested
 
-#####<a name="jcobject-update"></a>update (data[, val])
+##### <a name="jcobject-update"></a>update (data[, val])
 Updates with new data.
 - data (obj, string) A collection of properties and new values to 
                      update OR the name of a single property to update  
@@ -142,61 +142,61 @@ Updates with new data.
                value to update it to
 - returns (obj) This
 
-###<a name="jcfluxstore"></a>JCFluxStore
+### <a name="jcfluxstore"></a>JCFluxStore
 
 A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject with built-in actions and dispatcher.
 
-#####constructor ([data, defaults, Dispatch, Actions, AC])
+##### constructor ([data, defaults, Dispatch, Actions, AC])
 - data (obj) A collection of properties and values to populate the store with
 - defaults (obj) An object of property names and default values to use to create the store
 - Dispatch (Flux.Dispatcher) A Flux dispatcher to use instead of the built-in
 - Actions (obj) An object of Flux actions to make available instead of the built-in
 - AC (obj) An object of Flux action values to use instead of the built-in
         
-#####get (prop)
+##### get (prop)
 [JCObject.get()](#jcobject-get)
 
-#####<a name="jcflux-update"></a>update (data[, val]) -- *Triggers Change Event*
+##### <a name="jcflux-update"></a>update (data[, val]) -- *Triggers Change Event*
 [JCObject.update()](#jcobject-update)
 
-#####addChangeListener (callback)
-#####removeChangeListener (callback)
+##### addChangeListener (callback)
+##### removeChangeListener (callback)
 Add/remove a change listener that gets called when change events are triggered in the store.
 - callback (func) The listener to register
 
-####Built-In Actions
+#### Built-In Actions
 
-#####update (id, data[, val]) -> [JCFluxStore.update()](#jcflux-update)
+##### update (id, data[, val]) -> [JCFluxStore.update()](#jcflux-update)
 - id (int) The id of the object to update
 - Action parameters: data, val
 - Action name: **UPDATE**
 
-###<a name="jcflux"></a>JCFlux
+### <a name="jcflux"></a>JCFlux
 
 A namespace object for holding the `JCFlux` api.
 
-####<a name="fluxstore"></a>FluxStore
+#### <a name="fluxstore"></a>FluxStore
 
 A basic [Flux](https://facebook.github.io/flux/) store meant to be extended by custom Flux store classes.
 
-#####constructor ([Dispatch])
+##### constructor ([Dispatch])
 - Dispatch (Flux.Dispatcher) A Flux dispatcher to register actions to (if not given, then no actions will be registerd)
 
-#####addChangeListener (callback)
-#####removeChangeListener (callback)
+##### addChangeListener (callback)
+##### removeChangeListener (callback)
 Add/remove a change listener that gets called when change events are triggered in the store.
 - callback (func) The listener to register
 
-#####Properties
+##### Properties
 - fluxActions (obj) Add actions to be called from the dispatcher
   + An action consists of a name key and method value
   + Example: `fluxActions["AC-1"] = "update";` will call a method named `update` when an `"AC-1"` action is dispatched
 
-###<a name="clientservice"></a>ClientService
+### <a name="clientservice"></a>ClientService
 
 A service class for sending and handling network requests from clients with default functionality to automatically resend failed requests. This means that the service will wait for a successful HTTP status before resolving the returned promise while progressively waiting one second longer before each resend. The service can be configured to reject the returned promise instead of resending the request for specific HTTP statuses or all statuses. This configuration can be done globally or on a per request level. Authorization can also be handled by providing a value for the `Authorization` header and listening for invalid auth events. Requests are sent using [jQuery.ajax()](http://api.jquery.com/jquery.ajax/); settings properties to override those provided to jQuery.ajax() by default can be passed on a per request basis. Returned promises are from the [Q](https://github.com/kriskowal/q/wiki/API-Reference) library.
 
-#####<a name="clientservice-constructor"></a>constructor ([auth, reject])
+##### <a name="clientservice-constructor"></a>constructor ([auth, reject])
 - auth (string) The value of an `Authorization` header to send with the request
 - reject (int) An integer HTTP status code to reject a promise for by default
   + If a 4** or 5** code is received, the default behavior is to resend the request (waiting one second longer before each resend)
@@ -204,23 +204,23 @@ A service class for sending and handling network requests from clients with defa
 - reject (array[int]) An array of integer HTTP status codes   
 - reject (string) The string 'all' will reject the promise for all failed requests
 
-#####setAuth (auth)
+##### setAuth (auth)
 Sets the auth value for the service (see [ClientService.constructor()](#clientservice-constructor)).
 - auth (string) The auth string to set
 
-#####revokeAuth ()        
+##### revokeAuth ()
 Revokes the current auth value.
 
-#####setReject (reject)
+##### setReject (reject)
 Sets the default reject value for requests (see [ClientService.constructor()](#clientservice-constructor)).
 - reject (string, int, array) The reject value to set
 
-#####addInvalidAuthListener (callback)
-#####removeInvalidAuthListener (callback)
+##### addInvalidAuthListener (callback)
+##### removeInvalidAuthListener (callback)
 Add/remove an invalid auth listener that gets called when the server invalidates the given auth string with a 401 HTTP status.
 - callback (func) The listener to register, function will receive the body of the response as an argument
 
-#####<a name="clientservice-ajax"></a>ajax (method, url[, data, serviceOptions, ajaxOptions])
+##### <a name="clientservice-ajax"></a>ajax (method, url[, data, serviceOptions, ajaxOptions])
 Send AJAX request to url.
 - method (string) The HTTP method to use (e.g. 'POST', 'DELETE', etc...)
 - url (string)  The url to send the request to
@@ -234,7 +234,7 @@ Send AJAX request to url.
   + Rejected with (array) The jqXHR object and the body of the response (parsed if JSON or XML)
   + Rejected with (string) If the call is cancelled while waiting to resend, the string "CANCELLED"
 
-#####get (url[, params, serviceOptions, ajaxOptions])
+##### get (url[, params, serviceOptions, ajaxOptions])
 Calls [ClientSerivce.ajax()](#clientservice-ajax) using `GET` method.
 - url (string)  The url to send the request to.
 - params (obj) A JavaScript object to be sent to the API as urlencoded string
@@ -242,10 +242,10 @@ Calls [ClientSerivce.ajax()](#clientservice-ajax) using `GET` method.
 - ajaxOptions (obj) Settings properties to pass to [jQuery.ajax()](http://api.jquery.com/jquery.ajax/) for this request
 - returns (Q) A [Q](https://github.com/kriskowal/q/wiki/API-Reference) Promise
 
-#####getLastCallId ()
+##### getLastCallId ()
 Gets the call id of the most recent request.
 - returns (string) The call id of the most recent request
 
-#####cancel (callId)
+##### cancel (callId)
 Cancels a request with the given call id.
 - callId (string) The call id of the request to cancel
