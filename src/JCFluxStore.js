@@ -52,11 +52,18 @@ var JCActionsService = class {
     //create new dispatcher
     JCDispatch = new Flux.Dispatcher(),
     //create new actions service
-    JCActions = new JCActionsService(JCDispatch, ACTIONS);
-//inherit from both JCObject and FluxStore
-mixin(JCObject, FluxStore.prototype, {warn: false, mergeDuplicates: false});       
-//create JCFluxStore class from FluxStore
-class JCFluxStore extends FluxStore {
+    JCActions = new JCActionsService(JCDispatch, ACTIONS),
+    //create mixin class to inherit from both JCObject and FluxStore
+    FluxStoreJCObject = class {
+        constructor (FluxStoreArgs, JCObjectArgs) {
+            //call both constructors, extend this with results
+            extend(this, new FluxStore(...FluxStoreArgs), new JCObject(...JCObjectArgs));
+        }
+    };
+//populate mixin class with both JCObject and FluxStore
+mixin([FluxStore, JCObject], FluxStoreJCObject.prototype, {warn: false, mergeDuplicates: false});       
+//create JCFluxStore class from FluxStoreJCObject mixin
+class JCFluxStore extends FluxStoreJCObject {
     
     constructor (data, defaults, Dispatch, Actions, AC) {
         //if we weren't given defaults, use data
@@ -64,9 +71,12 @@ class JCFluxStore extends FluxStore {
             //if we weren't given a Dipsatch, use JCDispatch
             Dispatcher = Dispatch || JCDispatch;
         //pass data to FluxStore
-        super(Dispatcher);
-        //call JCObject constructor
-        extend(this, new JCObject(defaults), this);
+        super([Dispatcher], [defaults]);
+        //mixin solution doesn't support binding this in constructor, redo dispatcher registration
+        this.__Dispatch.unregister(this._dispatchToken);
+        this._dispatchToken = this.__Dispatch.register((payload) => {
+          this.__invokeOnDispatch(payload);
+        });
         
         //store services
         this._Actions = Actions || JCActions;

@@ -30,15 +30,15 @@ var _es6Mixins2 = _interopRequireDefault(_es6Mixins);
 
 var _JCObject = require('./JCObject.js');
 
-var _FluxStore2 = require('./FluxStore.js');
+var _FluxStore = require('./FluxStore.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -96,13 +96,21 @@ ACTIONS = {
 JCDispatch = new _flux2.default.Dispatcher(),
 
 //create new actions service
-JCActions = new JCActionsService(JCDispatch, ACTIONS);
-//inherit from both JCObject and FluxStore
-(0, _es6Mixins2.default)(_JCObject.JCObject, _FluxStore2.FluxStore.prototype, { warn: false, mergeDuplicates: false });
-//create JCFluxStore class from FluxStore
+JCActions = new JCActionsService(JCDispatch, ACTIONS),
 
-var JCFluxStore = function (_FluxStore) {
-    _inherits(JCFluxStore, _FluxStore);
+//create mixin class to inherit from both JCObject and FluxStore
+FluxStoreJCObject = function FluxStoreJCObject(FluxStoreArgs, JCObjectArgs) {
+    _classCallCheck(this, FluxStoreJCObject);
+
+    //call both constructors, extend this with results
+    (0, _extend2.default)(this, new (Function.prototype.bind.apply(_FluxStore.FluxStore, [null].concat(_toConsumableArray(FluxStoreArgs))))(), new (Function.prototype.bind.apply(_JCObject.JCObject, [null].concat(_toConsumableArray(JCObjectArgs))))());
+};
+//populate mixin class with both JCObject and FluxStore
+(0, _es6Mixins2.default)([_FluxStore.FluxStore, _JCObject.JCObject], FluxStoreJCObject.prototype, { warn: false, mergeDuplicates: false });
+//create JCFluxStore class from FluxStoreJCObject mixin
+
+var JCFluxStore = function (_FluxStoreJCObject) {
+    _inherits(JCFluxStore, _FluxStoreJCObject);
 
     function JCFluxStore(data, defaults, Dispatch, Actions, AC) {
         _classCallCheck(this, JCFluxStore);
@@ -114,10 +122,13 @@ var JCFluxStore = function (_FluxStore) {
         Dispatcher = Dispatch || JCDispatch;
         //pass data to FluxStore
 
-        //call JCObject constructor
-        var _this = _possibleConstructorReturn(this, (JCFluxStore.__proto__ || Object.getPrototypeOf(JCFluxStore)).call(this, Dispatcher));
+        //mixin solution doesn't support binding this in constructor, redo dispatcher registration
+        var _this = _possibleConstructorReturn(this, (JCFluxStore.__proto__ || Object.getPrototypeOf(JCFluxStore)).call(this, [Dispatcher], [defaults]));
 
-        (0, _extend2.default)(_this, new _JCObject.JCObject(defaults), _this);
+        _this.__Dispatch.unregister(_this._dispatchToken);
+        _this._dispatchToken = _this.__Dispatch.register(function (payload) {
+            _this.__invokeOnDispatch(payload);
+        });
 
         //store services
         _this._Actions = Actions || JCActions;
@@ -179,12 +190,12 @@ var JCFluxStore = function (_FluxStore) {
     }]);
 
     return JCFluxStore;
-}(_FluxStore2.FluxStore);
+}(FluxStoreJCObject);
 //child will have methods the same name as the parent
 
 
 JCFluxStore.prototype._updateData = _JCObject.JCObject.prototype.update;
 JCFluxStore.prototype._resetData = _JCObject.JCObject.prototype.reset;
-JCFluxStore.prototype._destroyStore = _FluxStore2.FluxStore.prototype.destroy;
+JCFluxStore.prototype._destroyStore = _FluxStore.FluxStore.prototype.destroy;
 //export
 exports.JCFluxStore = JCFluxStore;
