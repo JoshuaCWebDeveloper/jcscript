@@ -142,6 +142,11 @@ Updates with new data.
                value to update it to
 - returns (obj) This
 
+##### <a name="jcobject-reset"></a>reset ([propSpec])
+Resets all properties to default values (or only specific properties if specified)
+- propSpec (str, array) The name(s) of the property(ies) to reset (defaults to all properties)
+- returns (obj) This
+        
 ### <a name="jcfluxstore"></a>JCFluxStore
 
 A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject with built-in actions and dispatcher.
@@ -158,6 +163,9 @@ A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject wit
 
 ##### <a name="jcflux-update"></a>update (data[, val]) -- *Triggers Change Event*
 [JCObject.update()](#jcobject-update)
+
+##### <a name="jcflux-reset"></a>reset ([propSpec]) -- *Triggers Change Event*
+[JCObject.reset()](#jcobject-reset)
 
 ##### addChangeListener (callback)
 ##### removeChangeListener (callback)
