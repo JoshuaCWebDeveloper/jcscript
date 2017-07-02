@@ -32,7 +32,7 @@ var JCObject = JCScript.JCObject;
 Use `JCObject` to create and access a simple object
 
 ```
-/* Create new Employee using default values */
+/* Create new Employee model */
 var Employee= new JCObject ({
     firstName: '',
     lastName: '',
@@ -81,7 +81,7 @@ var Joshua = new Employee({
 Use `JCFluxStore` to do the same thing with a [Flux](https://facebook.github.io/flux/) model
 
 ```
-/* Create new Employee using default values */
+/* Create new Employee model */
 var Employee= new JCFluxStore({
     firstName: Joshua,
     lastName: Carter,
@@ -146,9 +146,9 @@ Updates with new data.
 
 A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject with built-in actions and dispatcher.
 
-##### constructor ([data, defaults, Dispatch, Actions, AC])
+##### constructor ([data, model, Dispatch, Actions, AC])
 - data (obj) A collection of properties and values to populate the store with
-- defaults (obj) An object of property names and default values to use to create the store
+- model (obj) An object of property names and default values to use to create the store
 - Dispatch (Flux.Dispatcher) A Flux dispatcher to use instead of the built-in
 - Actions (obj) An object of Flux actions to make available instead of the built-in
 - AC (obj) An object of Flux action values to use instead of the built-in
