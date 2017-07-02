@@ -129,9 +129,9 @@ A basic object class with getter and setter methods that can be inherited from w
 - model (obj) An object of property names and default values 
               to use to create the object
         
-##### <a name="jcobject-get"></a>get (prop)
+##### <a name="jcobject-get"></a>get ([propSpec])
 Gets a property value.
-- prop (string, array) The name(s) of the property(ies) to get
+- propSpec (str, array) The name(s) of the property(ies) to get (defaults to all properties)
 - returns (all) The property value, or an object of all properties requested
 
 ##### <a name="jcobject-update"></a>update (data[, val])
@@ -153,7 +153,7 @@ A basic [Flux](https://facebook.github.io/flux/) store modeled by a JCObject wit
 - Actions (obj) An object of Flux actions to make available instead of the built-in
 - AC (obj) An object of Flux action values to use instead of the built-in
         
-##### get (prop)
+##### get ([propSpec])
 [JCObject.get()](#jcobject-get)
 
 ##### <a name="jcflux-update"></a>update (data[, val]) -- *Triggers Change Event*
