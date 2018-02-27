@@ -372,19 +372,24 @@ describe('ClientService', function () {
         
         it ('Should fail a promise for a status configured with reject', function () {
             //create service
-            var Service = new ClientService(undefined, 500);
+            var Service = new ClientService(undefined, 500),
+                //create spy to listen for failure
+                failHandler = sinon.spy();
             //set response
             createJsonResponse(500);
             //make request
-            return Service.get(uri).catch(function (args) {
-                testJsonResponse(args[1]);
+            return Service.get(uri).catch(failHandler).then(function () {
+                //check and ensure the promise was failed
+                assert.equal(failHandler.callCount, 1);
             });
         });
         
         it ('Should fail a promise for multiple statuses configured with reject', function () {
             //create service
             var Service = new ClientService(undefined, [500, 406]), 
-                i = 0;
+                i = 0,
+                //create spy to listen for failure
+                failHandler = sinon.spy();
             //set response
             Server.respondWith(function (request) {
                 //respond with 500 or 406
@@ -394,19 +399,20 @@ describe('ClientService', function () {
             });
             //make requests
             return Q.all([
-                Service.get(uri).catch(function (args) {
-                    testJsonResponse(args[1]);
-                }),
-                Service.get(uri).catch(function (args) {
-                    testJsonResponse(args[1]);
-                })
-            ]);
+                Service.get(uri).catch(failHandler),
+                Service.get(uri).catch(failHandler)
+            ]).then(function () {
+                //check and ensure the promise was failed twice
+                assert.equal(failHandler.callCount, 2);
+            });
         });
         
         it ('Should fail a promise for multiple statuses configured with reject all', function () {
             //create service
             var Service = new ClientService(undefined, "all"),
-                i = 0;
+                i = 0,
+                //create spy to listen for failure
+                failHandler = sinon.spy();
             //set response
             Server.respondWith(function (request) {
                 //respond with 500 or 406
@@ -416,13 +422,12 @@ describe('ClientService', function () {
             });
             //make requests
             return Q.all([
-                Service.get(uri).catch(function (args) {
-                    testJsonResponse(args[1]);
-                }),
-                Service.get(uri).catch(function (args) {
-                    testJsonResponse(args[1]);
-                })
-            ]);
+                Service.get(uri).catch(failHandler),
+                Service.get(uri).catch(failHandler)
+            ]).then(function () {
+                //check and ensure the promise was failed twice
+                assert.equal(failHandler.callCount, 2);
+            });
         });
         
         it ('Should still resend a request when a different status is configured with reject', function () {
