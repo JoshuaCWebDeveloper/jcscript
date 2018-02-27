@@ -468,6 +468,58 @@ describe('ClientService', function () {
             //make request (don't return, test is done when auth listener is called)
             Service.get(uri);
         });
+        
+        describe ('Should parse', function () {
+            it ('JSON data', function () {
+                //create service
+                var Service = new ClientService(undefined, 500);
+                //set response
+                createJsonResponse(500);
+                //make request
+                return Service.get(uri).catch(function (args) {
+                    testJsonResponse(args[1]);
+                });
+            });
+            
+            it ('XML data', function () {
+                //create service
+                var Service = new ClientService(undefined, "all");
+                //respond with 200
+                Server.respondWith([
+                    400,
+                    { "Content-Type": "application/xml" },
+                    `<?xml version="1.0"?>
+    <article>
+        <author>Joshua Carter</author>
+        <title>Why I Am Awesome</title>
+        <body>This is a rhetorical piece.</body>
+        <comments>Nobody likes you Joshua.</comments>
+    </article>
+    `
+                ]);
+                //make request
+                return Service.get(uri).then(undefined, (args) => {
+                    var data = args[1];
+                    assert(data instanceof window.Document);
+                    assert.equal(data.documentElement.tagName, "article");
+                });
+            });
+            
+            it ("Nothing and just return plain text", function () {
+               //create service
+                var Service = new ClientService(undefined, "all"),
+                    txtStr = "What is this???";
+                //respond with 200
+                Server.respondWith([
+                    400,
+                    { "Content-Type": "text/plain" },
+                    txtStr
+                ]);
+                //make request
+                return Service.get(uri).then(undefined, (args) => {
+                    assert.equal(args[1], txtStr);
+                });
+            });
+        });
     });
-    
 });
