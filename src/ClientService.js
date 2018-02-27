@@ -122,7 +122,7 @@ var Call = class extends JCObject {
                     }
                 }
                 //data is either parsed data or response text
-                data = jqXHR.responseJSON || jqXHR.responseXML || jqXHR.resoponseText;
+                data = jqXHR.responseJSON || jqXHR.responseXML || jqXHR.responseText;
                 //reject this promise with jqXHR and data
                 throw [jqXHR, data];
             });
