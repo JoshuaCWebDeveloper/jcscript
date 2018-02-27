@@ -332,6 +332,18 @@ describe('ClientService', function () {
                 assert(false);
             });
         });
+        
+        it ('Should return full custom jqXHR object when parameter is specified', function () {
+            //create service
+            var Service = new ClientService();
+            //make request
+            createJsonResponse();
+            return Service.get(uri, {}, {returnXHR: true}).then((jqXHR) => {
+                assert.equal(typeof jqXHR.abort, "function");
+                assert.equal(typeof jqXHR.responseData, "object");
+                assert.equal(typeof jqXHR.responseData.author, "string");
+            });
+        });
     });
     
     describe('#Error Statuses', function () {
@@ -467,6 +479,19 @@ describe('ClientService', function () {
             createJsonResponse(401);
             //make request (don't return, test is done when auth listener is called)
             Service.get(uri);
+        });
+        
+        it ('Should return full custom jqXHR object when parameter is specified', function () {
+            //create service
+            var Service = new ClientService(undefined, 500);
+            //set response
+            createJsonResponse(500);
+            //make request
+            return Service.get(uri, {}, {returnXHR: true}).then(undefined, (jqXHR) => {
+                assert.equal(typeof jqXHR.abort, "function");
+                assert.equal(typeof jqXHR.responseData, "object");
+                assert.equal(typeof jqXHR.responseData.author, "string");
+            });
         });
         
         describe ('Should parse', function () {
