@@ -32,8 +32,6 @@ var _q = require('q');
 
 var _q2 = _interopRequireDefault(_q);
 
-var _xmldom = require('xmldom');
-
 var _JCObject2 = require('./JCObject.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -157,7 +155,7 @@ var Call = function (_JCObject) {
                     }
                     //try to parse response as XML
                     try {
-                        jqXHR.responseXML = new DomParser().parseFromString(jqXHR.responseText, "text/xml");
+                        jqXHR.responseXML = new window.DOMParser().parseFromString(jqXHR.responseText, "text/xml");
                         //if there was a parse error
                         if (jqXHR.responseXML.documentElement.nodeName == "parsererror") {
                             //throw the error

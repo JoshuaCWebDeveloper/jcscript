@@ -10,7 +10,6 @@ import Events from 'events';
 import extend from 'extend';
 import $ from 'jquery';
 import Q from 'q';
-import { DOMParser } from 'xmldom';
 import { JCObject } from './JCObject.js';
 //create Call class to represent single call
 var Call = class extends JCObject {
@@ -111,7 +110,7 @@ var Call = class extends JCObject {
                     }
                     //try to parse response as XML
                     try {
-                        jqXHR.responseXML = (new DomParser()).parseFromString(jqXHR.responseText, "text/xml");
+                        jqXHR.responseXML = (new window.DOMParser()).parseFromString(jqXHR.responseText, "text/xml");
                         //if there was a parse error
                         if (jqXHR.responseXML.documentElement.nodeName == "parsererror") {
                             //throw the error
