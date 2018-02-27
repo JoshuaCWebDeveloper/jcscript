@@ -42,8 +42,23 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+//create jqXHR extension object
+var csXHR = {
+    //remove jQuery promise methods
+    then: null,
+    done: null,
+    fail: null,
+    always: null,
+    pipe: null,
+    progress: null,
+    state: null,
+    promise: null,
+    //add custom ClientService properties
+    responseData: null
+},
+
 //create Call class to represent single call
-var Call = function (_JCObject) {
+Call = function (_JCObject) {
     _inherits(Call, _JCObject);
 
     function Call(data) {
@@ -58,6 +73,7 @@ var Call = function (_JCObject) {
             requestId: '', //a unique text identifier for a method/URL/data combination
             reject: [],
             rejectAll: false,
+            returnXHR: false,
             method: '',
             url: '',
             dataType: 'json', //the type of data in the response (accepts header)
@@ -128,15 +144,24 @@ var Call = function (_JCObject) {
             }
             //chain handlers
             this._Promise = this._Promise.then(function (args) {
-                //return data
-                return args[0];
+                //expand array
+                var _args = _slicedToArray(args, 3),
+                    data = _args[0],
+                    jqXHR = _args[2];
+                //extend jqXHR
+
+
+                jqXHR = (0, _extend2.default)(jqXHR, csXHR);
+                //set data
+                jqXHR.responseData = data;
+                //return jqXHR
+                return _this2._returnXHR ? jqXHR : data;
             }, function (args) {
                 //FAILURE
                 //expand array
-                var _args = _slicedToArray(args, 2),
-                    jqXHR = _args[0],
-                    textStatus = _args[1],
-                    data;
+                var _args2 = _slicedToArray(args, 2),
+                    jqXHR = _args2[0],
+                    textStatus = _args2[1];
                 //if we are NOT supposed to reject the promise for this status code AND
                 //the request was not aborted
 
@@ -165,10 +190,12 @@ var Call = function (_JCObject) {
                         jqXHR.responseXML = undefined;
                     }
                 }
+                //extend jqXHR
+                (0, _extend2.default)(jqXHR, csXHR);
                 //data is either parsed data or response text
-                data = jqXHR.responseJSON || jqXHR.responseXML || jqXHR.responseText;
-                //reject this promise with jqXHR and data
-                throw [jqXHR, data];
+                jqXHR.responseData = jqXHR.responseJSON || jqXHR.responseXML || jqXHR.responseText;
+                //reject this promise with jqXHR
+                throw _this2._returnXHR ? jqXHR : [jqXHR, jqXHR.responseData];
             });
         }
 
@@ -345,6 +372,9 @@ ClientService = function (_Events$EventEmitter) {
             //set reject
             reject = serviceProps.reject || this._reject,
 
+            //set returnXHR
+            returnXHR = serviceProps.returnXHR || false,
+
             //init headers
             headers = {},
                 call,
@@ -364,6 +394,7 @@ ClientService = function (_Events$EventEmitter) {
                 url: url,
                 data: data,
                 reject: reject,
+                returnXHR: returnXHR,
                 headers: headers,
                 ajaxProps: ajaxProps
             });
